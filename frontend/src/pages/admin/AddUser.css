@@ -1,0 +1,175 @@
+.add-user-page {
+  min-height: 100vh;
+  background: #f4f6f8;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+/* Header */
+
+.add-user-header {
+  background: #fff;
+  padding: 24px 30px;
+  border-radius: 12px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 25px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.add-user-header h1 {
+  margin: 0;
+  color: #222;
+}
+
+.add-user-header p {
+  margin: 6px 0 0;
+  color: #777;
+}
+
+.add-user-header button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 7px;
+
+  background: #222;
+  color: #fff;
+
+  cursor: pointer;
+}
+
+.add-user-header button:hover {
+  background: #000;
+}
+
+/* Form Card */
+
+.add-user-card {
+  max-width: 700px;
+  margin: 0 auto;
+
+  background: #fff;
+  padding: 30px;
+
+  border-radius: 12px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* Form */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+
+  padding: 12px 14px;
+
+  border: 1px solid #ccc;
+  border-radius: 7px;
+
+  box-sizing: border-box;
+
+  font-size: 15px;
+  font-family: inherit;
+
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #555;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #777;
+  font-size: 12px;
+}
+
+/* Messages */
+
+.error-message {
+  margin-bottom: 15px;
+
+  color: #d93025;
+  font-size: 14px;
+}
+
+.success-message {
+  margin-bottom: 15px;
+
+  color: #188038;
+  font-size: 14px;
+}
+
+/* Create Button */
+
+.create-user-button {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #222;
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.create-user-button:hover {
+  background: #000;
+}
+
+.create-user-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  .add-user-page {
+    padding: 15px;
+  }
+
+  .add-user-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .add-user-card {
+    padding: 20px;
+  }
+}
