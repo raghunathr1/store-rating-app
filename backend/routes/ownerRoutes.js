@@ -12,12 +12,20 @@ const {
 
 const router = express.Router();
 
+// =========================
+// OWNER DASHBOARD
+// =========================
+
 router.get(
   "/dashboard",
   authenticateToken,
   authorizeRoles("owner"),
   getDashboard
 );
+
+// =========================
+// OWNER RATERS
+// =========================
 
 router.get(
   "/raters",

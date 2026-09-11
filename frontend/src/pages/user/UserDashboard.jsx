@@ -17,6 +17,9 @@ function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // =========================
+  // FETCH STORES
+  // =========================
   const fetchStores = async () => {
     try {
       setLoading(true);
@@ -24,14 +27,17 @@ function UserDashboard() {
 
       const params = new URLSearchParams();
 
+      // Search by name
       if (name.trim()) {
         params.append("name", name.trim());
       }
 
+      // Search by address
       if (address.trim()) {
         params.append("address", address.trim());
       }
 
+      // Sorting
       params.append("sortBy", sortBy);
       params.append("order", order);
 
@@ -39,19 +45,52 @@ function UserDashboard() {
 
       const data = await getUserStores(queryString);
 
-      setStores(data);
+      console.log("USER STORES RESPONSE:", data);
+
+      /*
+        Backend may return:
+
+        [
+          {...},
+          {...}
+        ]
+
+        OR
+
+        {
+          stores: [...]
+        }
+      */
+
+      if (Array.isArray(data)) {
+        setStores(data);
+      } else if (data && Array.isArray(data.stores)) {
+        setStores(data.stores);
+      } else {
+        console.error("Unexpected stores response:", data);
+        setStores([]);
+        setError("Invalid stores data received from server");
+      }
     } catch (error) {
-      setError(error.message);
+      console.error("Fetch stores error:", error);
+
+      setError(error.message || "Failed to load stores");
       setStores([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // =========================
+  // FETCH WHEN FILTER CHANGES
+  // =========================
   useEffect(() => {
     fetchStores();
   }, [name, address, sortBy, order]);
 
+  // =========================
+  // LOGOUT
+  // =========================
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -62,17 +101,23 @@ function UserDashboard() {
   return (
     <div className="user-dashboard">
 
-      {/* Header */}
+      {/* =========================
+          HEADER
+      ========================= */}
       <header className="user-header">
 
         <div>
           <h1>Store Rating App</h1>
-          <p>Find and rate stores</p>
+
+          <p>
+            Find and rate stores
+          </p>
         </div>
 
         <div className="user-header-buttons">
 
           <button
+            type="button"
             className="change-password-header-button"
             onClick={() => navigate("/user/change-password")}
           >
@@ -80,6 +125,7 @@ function UserDashboard() {
           </button>
 
           <button
+            type="button"
             className="logout-button"
             onClick={handleLogout}
           >
@@ -90,7 +136,10 @@ function UserDashboard() {
 
       </header>
 
-      {/* Welcome */}
+
+      {/* =========================
+          WELCOME SECTION
+      ========================= */}
       <section className="welcome-section">
 
         <h2>Stores</h2>
@@ -101,86 +150,144 @@ function UserDashboard() {
 
       </section>
 
-      {/* Search and Sorting */}
+
+      {/* =========================
+          SEARCH & SORTING
+      ========================= */}
       <section className="search-section">
 
+        {/* Search by Name */}
         <div className="search-group">
 
-          <label>Search by Name</label>
+          <label htmlFor="store-name">
+            Search by Name
+          </label>
 
           <input
+            id="store-name"
             type="text"
             placeholder="Enter store name..."
             value={name}
+            autoComplete="off"
             onChange={(e) => setName(e.target.value)}
           />
 
         </div>
 
+
+        {/* Search by Address */}
         <div className="search-group">
 
-          <label>Search by Address</label>
+          <label htmlFor="store-address">
+            Search by Address
+          </label>
 
           <input
+            id="store-address"
             type="text"
             placeholder="Enter store address..."
             value={address}
+            autoComplete="off"
             onChange={(e) => setAddress(e.target.value)}
           />
 
         </div>
 
+
+        {/* Sort By */}
         <div className="search-group">
 
-          <label>Sort By</label>
+          <label htmlFor="sort-by">
+            Sort By
+          </label>
 
           <select
+            id="sort-by"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
-            <option value="id">ID</option>
-            <option value="name">Name</option>
-            <option value="address">Address</option>
-            <option value="overallRating">
+
+            <option value="id">
+              ID
+            </option>
+
+            <option value="name">
+              Name
+            </option>
+
+            <option value="address">
+              Address
+            </option>
+
+            {/* IMPORTANT:
+                Backend uses "rating", not "overallRating"
+            */}
+            <option value="rating">
               Rating
             </option>
+
           </select>
 
         </div>
 
+
+        {/* Order */}
         <div className="search-group">
 
-          <label>Order</label>
+          <label htmlFor="sort-order">
+            Order
+          </label>
 
           <select
+            id="sort-order"
             value={order}
             onChange={(e) => setOrder(e.target.value)}
           >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+
+            <option value="asc">
+              Ascending
+            </option>
+
+            <option value="desc">
+              Descending
+            </option>
+
           </select>
 
         </div>
 
       </section>
 
-      {/* Error */}
+
+      {/* =========================
+          ERROR
+      ========================= */}
       {error && (
         <p className="error-message">
           {error}
         </p>
       )}
 
-      {/* Stores */}
+
+      {/* =========================
+          LOADING
+      ========================= */}
       {loading ? (
 
-        <h2>Loading stores...</h2>
+        <div className="loading-container">
+          <h2>Loading stores...</h2>
+        </div>
 
       ) : stores.length === 0 ? (
 
+        /* =========================
+           NO STORES
+        ========================= */
         <div className="no-stores">
 
-          <h3>No stores found</h3>
+          <h3>
+            No stores found
+          </h3>
 
           <p>
             Try searching with a different name or address.
@@ -190,61 +297,110 @@ function UserDashboard() {
 
       ) : (
 
+        /* =========================
+           STORES
+        ========================= */
         <section className="stores-grid">
 
-          {stores.map((store) => (
+          {stores.map((store) => {
 
-            <div
-              className="store-card"
-              key={store.id}
-            >
+            /*
+              Backend storeModel currently returns:
 
-              <div className="store-card-header">
+              id
+              name
+              email
+              address
+              owner_id
+              rating
+              created_at
 
-                <h3>{store.name}</h3>
+              User store controller may additionally
+              return userRating.
+            */
 
-              </div>
+            const overallRating =
+              store.overallRating !== undefined
+                ? store.overallRating
+                : store.rating;
 
-              <div className="store-info">
+            return (
 
-                <p>
-                  <strong>Address:</strong>{" "}
-                  {store.address}
-                </p>
-
-                <p>
-                  <strong>Overall Rating:</strong>{" "}
-
-                  {store.overallRating !== null &&
-                  store.overallRating !== undefined
-                    ? Number(store.overallRating).toFixed(1)
-                    : "No ratings yet"}
-                </p>
-
-                <p>
-                  <strong>My Rating:</strong>{" "}
-
-                  {store.userRating
-                    ? `${store.userRating}/5`
-                    : "Not rated yet"}
-                </p>
-
-              </div>
-
-              <button
-                className="rate-button"
-                onClick={() =>
-                  navigate(`/user/rate/${store.id}`)
-                }
+              <div
+                className="store-card"
+                key={store.id}
               >
-                {store.userRating
-                  ? "Modify Rating"
-                  : "Submit Rating"}
-              </button>
 
-            </div>
+                {/* Store Name */}
+                <div className="store-card-header">
 
-          ))}
+                  <h3>
+                    {store.name}
+                  </h3>
+
+                </div>
+
+
+                {/* Store Information */}
+                <div className="store-info">
+
+                  {/* Address */}
+                  <p>
+                    <strong>
+                      Address:
+                    </strong>{" "}
+                    {store.address}
+                  </p>
+
+
+                  {/* Overall Rating */}
+                  <p>
+                    <strong>
+                      Overall Rating:
+                    </strong>{" "}
+
+                    {overallRating !== null &&
+                    overallRating !== undefined
+                      ? Number(overallRating).toFixed(1)
+                      : "No ratings yet"}
+                  </p>
+
+
+                  {/* User Rating */}
+                  <p>
+                    <strong>
+                      My Rating:
+                    </strong>{" "}
+
+                    {store.userRating !== null &&
+                    store.userRating !== undefined
+                      ? `${store.userRating}/5`
+                      : "Not rated yet"}
+                  </p>
+
+                </div>
+
+
+                {/* Rating Button */}
+                <button
+                  type="button"
+                  className="rate-button"
+                  onClick={() =>
+                    navigate(`/user/rate/${store.id}`)
+                  }
+                >
+
+                  {store.userRating !== null &&
+                  store.userRating !== undefined
+                    ? "Modify Rating"
+                    : "Submit Rating"}
+
+                </button>
+
+              </div>
+
+            );
+          })}
 
         </section>
 

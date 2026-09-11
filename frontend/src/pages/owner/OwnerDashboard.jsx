@@ -28,8 +28,19 @@ function OwnerDashboard() {
 
         const data = await getOwnerDashboard();
 
-        setDashboard(data.stores || []);
+        console.log("OWNER DASHBOARD:", data);
+
+        setDashboard(
+          Array.isArray(data?.stores)
+            ? data.stores
+            : []
+        );
       } catch (error) {
+        console.error(
+          "Owner dashboard error:",
+          error
+        );
+
         setError(error.message);
         setDashboard([]);
       } finally {
@@ -50,8 +61,19 @@ function OwnerDashboard() {
 
         const data = await getOwnerRaters();
 
-        setRaters(data.raters || []);
+        console.log("OWNER RATERS:", data);
+
+        setRaters(
+          Array.isArray(data?.raters)
+            ? data.raters
+            : []
+        );
       } catch (error) {
+        console.error(
+          "Get raters error:",
+          error
+        );
+
         setError(error.message);
         setRaters([]);
       } finally {
@@ -90,10 +112,13 @@ function OwnerDashboard() {
     <div className="owner-dashboard">
 
       {/* ================= HEADER ================= */}
+
       <header className="owner-header">
 
         <div>
-          <h1>Store Owner Dashboard</h1>
+          <h1>
+            Store Owner Dashboard
+          </h1>
 
           <p>
             Manage your store ratings
@@ -110,7 +135,9 @@ function OwnerDashboard() {
             Change Password
           </button>
 
-          <button onClick={handleLogout}>
+          <button
+            onClick={handleLogout}
+          >
             Logout
           </button>
 
@@ -119,6 +146,7 @@ function OwnerDashboard() {
       </header>
 
       {/* ================= ERROR ================= */}
+
       {error && (
         <p className="error-message">
           {error}
@@ -126,17 +154,20 @@ function OwnerDashboard() {
       )}
 
       {/* ================= STORE STATS ================= */}
+
       <section className="owner-stats">
 
         {dashboard.length === 0 ? (
 
           <div className="no-store">
 
-            <h2>No Store Assigned</h2>
+            <h2>
+              No Store Assigned
+            </h2>
 
             <p>
-              No store has been assigned to your
-              account yet.
+              No store has been assigned to
+              your account yet.
             </p>
 
           </div>
@@ -147,20 +178,27 @@ function OwnerDashboard() {
 
             <div
               className="owner-store-section"
-              key={store.id}
+              key={store.store_id}
             >
 
+              {/* Store Name */}
+
               <h2>
-                {store.name}
+                {store.store_name}
               </h2>
 
+              {/* Store Address */}
+
               <p className="store-address">
-                {store.address}
+                {store.store_address}
               </p>
+
+              {/* ================= STATS ================= */}
 
               <div className="stats-grid">
 
                 {/* Average Rating */}
+
                 <div className="owner-stat-card">
 
                   <h3>
@@ -179,6 +217,7 @@ function OwnerDashboard() {
                 </div>
 
                 {/* Total Ratings */}
+
                 <div className="owner-stat-card">
 
                   <h3>
@@ -202,6 +241,7 @@ function OwnerDashboard() {
       </section>
 
       {/* ================= RATERS ================= */}
+
       <section className="raters-section">
 
         <div className="section-header">
@@ -213,14 +253,16 @@ function OwnerDashboard() {
             </h2>
 
             <p>
-              View customers who submitted ratings
+              View customers who submitted
+              ratings
             </p>
 
           </div>
 
         </div>
 
-        {/* Loading */}
+        {/* ================= LOADING RATERS ================= */}
+
         {loadingRaters ? (
 
           <h3>
@@ -229,7 +271,8 @@ function OwnerDashboard() {
 
         ) : raters.length === 0 ? (
 
-          /* No ratings */
+          /* ================= NO RATINGS ================= */
+
           <div className="no-ratings">
 
             <h3>
@@ -245,7 +288,8 @@ function OwnerDashboard() {
 
         ) : (
 
-          /* Ratings table */
+          /* ================= RATINGS TABLE ================= */
+
           <div className="raters-table-wrapper">
 
             <table className="raters-table">
@@ -267,6 +311,10 @@ function OwnerDashboard() {
                   </th>
 
                   <th>
+                    Store
+                  </th>
+
+                  <th>
                     Rating
                   </th>
 
@@ -283,26 +331,44 @@ function OwnerDashboard() {
                 {raters.map((rater) => (
 
                   <tr
-                    key={rater.id}
+                    key={`${rater.user_id}-${rater.created_at}`}
                   >
 
-                    <td>
-                      {rater.id}
-                    </td>
+                    {/* User ID */}
 
                     <td>
-                      {rater.name}
+                      {rater.user_id}
                     </td>
 
-                    <td>
-                      {rater.email}
-                    </td>
+                    {/* User Name */}
 
                     <td>
+                      {rater.user_name}
+                    </td>
+
+                    {/* User Email */}
+
+                    <td>
+                      {rater.user_email}
+                    </td>
+
+                    {/* Store Name */}
+
+                    <td>
+                      {rater.store_name}
+                    </td>
+
+                    {/* Rating */}
+
+                    <td>
+
                       <strong>
                         {rater.rating}/5
                       </strong>
+
                     </td>
+
+                    {/* Date */}
 
                     <td>
                       {rater.created_at

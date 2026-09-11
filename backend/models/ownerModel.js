@@ -1,6 +1,8 @@
 const db = require("../config/db");
 
+// =========================
 // GET STORE OWNER DASHBOARD
+// =========================
 const getOwnerDashboard = (ownerId, callback) => {
   const sql = `
     SELECT
@@ -14,13 +16,19 @@ const getOwnerDashboard = (ownerId, callback) => {
     LEFT JOIN ratings r
       ON s.id = r.store_id
     WHERE s.owner_id = ?
-    GROUP BY s.id
+    GROUP BY
+      s.id,
+      s.name,
+      s.email,
+      s.address
   `;
 
   db.query(sql, [ownerId], callback);
 };
 
+// =========================
 // GET USERS WHO RATED OWNER'S STORE
+// =========================
 const getStoreRaters = (ownerId, callback) => {
   const sql = `
     SELECT

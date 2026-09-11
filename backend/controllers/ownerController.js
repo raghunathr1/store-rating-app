@@ -3,7 +3,9 @@ const {
   getStoreRaters,
 } = require("../models/ownerModel");
 
+// =========================
 // OWNER DASHBOARD
+// =========================
 const getDashboard = (req, res) => {
   const ownerId = req.user.id;
 
@@ -22,7 +24,9 @@ const getDashboard = (req, res) => {
   });
 };
 
+// =========================
 // USERS WHO RATED OWNER'S STORE
+// =========================
 const getRaters = (req, res) => {
   const ownerId = req.user.id;
 
