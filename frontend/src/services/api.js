@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://store-rating-app-ew9z.onrender.com/api";
 
 // Common API request helper
 const apiRequest = async (url, options = {}) => {
